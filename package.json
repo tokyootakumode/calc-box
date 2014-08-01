@@ -1,0 +1,42 @@
+{
+  "name": "calc-box",
+  "version": "0.0.1",
+  "description": "Awesome module",
+  "keywords": [],
+  "homepage": "https://github.com/pchw/calc-box",
+  "bugs": "https://github.com/pchw/calc-box/issues",
+  "author": {
+    "name": "Hiroshi HORIKI",
+    "email": "bump.luv@gmail.com",
+    "url": "https://github.com/pchw"
+  },
+  "main": "./lib/calc-box.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pchw/calc-box.git"
+  },
+  "scripts": {
+    "test": "gulp test",
+    "pretest": "gulp"
+  },
+  "dependencies": {
+    "should": "^4.0.4"
+  },
+  "devDependencies": {
+    "chai": "^1.9.1",
+    "coffee-errors": "^0.8.5",
+    "coffee-script": "^1.7.1",
+    "gulp": "^3.8.6",
+    "gulp-coffee": "^2.1.1",
+    "gulp-mocha": "^0.5.1",
+    "gulp-util": "^2.2.20",
+    "mocha": "^1.18.2",
+    "sinon": "^1.9.1",
+    "sinon-chai": "^2.5.0"
+  },
+  "engines": {
+    "node": ">=0.10.0",
+    "npm": ">=1.2.10"
+  },
+  "license": "MIT"
+}
