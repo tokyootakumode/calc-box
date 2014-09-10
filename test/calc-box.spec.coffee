@@ -23,7 +23,7 @@ describe 'check generals', ->
     canContain = do box.canContain
     should.not.exists canContain
 
-describe 'test using single item', ->
+describe '1つの荷物を使ったテスト', ->
   it '荷物は横幅・縦幅・奥行きを持っている', ->
     # TODO
     box = new calcBox
@@ -107,3 +107,23 @@ describe 'test using single item', ->
     canContain = box.canContain parcel
     should.exists canContain
     canContain.should.eql false
+
+describe '複数個の荷物を使ったテスト', ->
+  it '荷物を入れたあとに箱の残り容量が減る', ->
+    box = new calcBox
+      width: 100
+      height: 200
+      length: 300
+
+    parcelA =
+      width: 90
+      height: 190
+      length: 290
+
+    parcelB =
+      width: 90
+      height: 190
+      length: 290
+
+    # TODO: parcelAを入れる
+    # TODO: parcelBを入れる
