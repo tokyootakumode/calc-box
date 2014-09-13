@@ -5,7 +5,7 @@ module.exports = class calcBox
     {
       @width
       @height
-      @length
+      @depth
     } = params if params
 
   ###
@@ -19,8 +19,8 @@ module.exports = class calcBox
       side: 'height'
       value: parcel.height
     ,
-      side: 'length'
-      value: parcel.length
+      side: 'depth'
+      value: parcel.depth
     ]
     sides = sides.sort (a, b)->
       b.value - a.value
@@ -28,7 +28,7 @@ module.exports = class calcBox
     sides
   ###
   最大長を返す
-  side: 'width'/'height'/'length'
+  side: 'width'/'height'/'depth'
   value: 値
   ###
   _longestSide: (parcel)->
@@ -38,7 +38,7 @@ module.exports = class calcBox
 
   ###
   最短辺を返す
-  side: 'width'/'height'/'length'
+  side: 'width'/'height'/'depth'
   value: 値
   ###
   _shortestSide: (parcel)->
@@ -63,15 +63,15 @@ module.exports = class calcBox
     ASIS =
       width: 'width'
       height: 'height'
-      length: 'length'
+      depth: 'depth'
     LEFT_1 =
       width: 'height'
-      height: 'length'
-      length: 'width'
+      height: 'depth'
+      depth: 'width'
     LEFT_2 =
-      width: 'length'
+      width: 'depth'
       height: 'width'
-      length: 'height'
+      depth: 'height'
 
     switch box.side
       when 'width'
@@ -80,7 +80,7 @@ module.exports = class calcBox
             ASIS
           when 'height'
             LEFT_1
-          when 'length'
+          when 'depth'
             LEFT_2
       when 'height'
         switch parcel.side
@@ -88,15 +88,15 @@ module.exports = class calcBox
             LEFT_2
           when 'height'
             ASIS
-          when 'length'
+          when 'depth'
             LEFT_1
-      when 'length'
+      when 'depth'
         switch parcel.side
           when 'width'
             LEFT_1
           when 'height'
             LEFT_2
-          when 'length'
+          when 'depth'
             ASIS
 
   ###
@@ -118,8 +118,8 @@ module.exports = class calcBox
   箱の体積を荷物が超えているかをチェックする
   ###
   _isOverVolume: (parcel)->
-    volumeOfParcel = parcel.width * parcel.height * parcel.length
-    volumeOfBox = @width * @height * @length
+    volumeOfParcel = parcel.width * parcel.height * parcel.depth
+    volumeOfBox = @width * @height * @depth
 
     return volumeOfBox <= volumeOfParcel
 
@@ -132,10 +132,10 @@ module.exports = class calcBox
     {
       width
       height
-      length
+      depth
     } = parcel
 
-    return null unless width and height and length
+    return null unless width and height and depth
 
     # 最大辺が箱の最大辺を超えてしまったら入らない
     return false if @_isOverMaxSide parcel

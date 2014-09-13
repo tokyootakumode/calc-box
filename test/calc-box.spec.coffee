@@ -17,7 +17,7 @@ describe 'check generals', ->
     box = new calcBox
       width: 100
       height: 200
-      length: 300
+      depth: 300
 
     should.exists box
     canContain = do box.canContain
@@ -29,7 +29,7 @@ describe '1つの荷物を使ったテスト', ->
     box = new calcBox
       width: 100
       height: 200
-      length: 300
+      depth: 300
 
     canContain = box.canContain {}
     should.not.exists canContain
@@ -37,12 +37,12 @@ describe '1つの荷物を使ったテスト', ->
     box = new calcBox
       width: 100
       height: 200
-      length: 300
+      depth: 300
 
     parcel =
       width: 10
       height: 20
-      length: 30
+      depth: 30
 
     canContain = box.canContain parcel
     should.exists canContain
@@ -52,12 +52,12 @@ describe '1つの荷物を使ったテスト', ->
     box = new calcBox
       width: 300
       height: 100
-      length: 200
+      depth: 200
 
     parcel =
       width: 300
       height: 20
-      length: 30
+      depth: 30
 
     canContain = box.canContain parcel
     should.exists canContain
@@ -67,12 +67,12 @@ describe '1つの荷物を使ったテスト', ->
     box = new calcBox
       width: 300
       height: 100
-      length: 200
+      depth: 200
 
     parcel = 
       width: 250
       height: 10
-      length: 20
+      depth: 20
 
     canContain = box.canContain parcel
     should.exists canContain
@@ -82,12 +82,12 @@ describe '1つの荷物を使ったテスト', ->
     box = new calcBox
       width: 100
       height: 50
-      length: 80
+      depth: 80
 
     parcel = 
       width: 90
       height: 90
-      length: 90
+      depth: 90
 
     canContain = box.canContain parcel
     should.exists canContain
@@ -97,12 +97,12 @@ describe '1つの荷物を使ったテスト', ->
     box = new calcBox
       width: 300
       height: 50
-      length: 80
+      depth: 80
 
     parcel = 
       width: 90
       height: 90
-      length: 90
+      depth: 90
 
     canContain = box.canContain parcel
     should.exists canContain
@@ -112,12 +112,12 @@ describe '1つの荷物を使ったテスト', ->
     box = new calcBox
       width: 100
       height: 200
-      length: 300
+      depth: 300
 
     parcelA =
       width: 10
       height: 20
-      length: 230
+      depth: 230
 
     r = box.pushParcel parcelA
     should.exists r
@@ -125,19 +125,19 @@ describe '1つの荷物を使ったテスト', ->
 
     box.width.should.eql 100
     box.height.should.eql 200
-    box.length.should.eql 290
+    box.depth.should.eql 290
 
 describe '複数個の荷物を使ったテスト', ->
   it '荷物を入れたあとに箱の残り容量が減る', ->
     box = new calcBox
       width: 100
       height: 200
-      length: 300
+      depth: 300
 
     parcelA =
       width: 99
       height: 99
-      length: 99
+      depth: 99
 
     r = box.pushParcel parcelA
     should.exists r
@@ -149,7 +149,7 @@ describe '複数個の荷物を使ったテスト', ->
 
     box.width.should.eql 100
     box.height.should.eql 200
-    box.length.should.eql 102
+    box.depth.should.eql 102
 
     r = box.pushParcel parcelA
     should.exists r
@@ -157,7 +157,7 @@ describe '複数個の荷物を使ったテスト', ->
 
     box.width.should.eql 100
     box.height.should.eql 101
-    box.length.should.eql 102
+    box.depth.should.eql 102
 
     r = box.pushParcel parcelA
     should.exists r
@@ -165,7 +165,7 @@ describe '複数個の荷物を使ったテスト', ->
 
     box.width.should.eql 100
     box.height.should.eql 101
-    box.length.should.eql 3
+    box.depth.should.eql 3
 
     canContain = box.canContain parcelA
     should.exists canContain
