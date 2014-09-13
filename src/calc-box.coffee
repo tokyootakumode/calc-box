@@ -1,3 +1,5 @@
+debug = require('debug')('calcbox')
+
 module.exports = class calcBox
   constructor: (params) ->
     {
@@ -7,11 +9,9 @@ module.exports = class calcBox
     } = params if params
 
   ###
-  最大長を返す
-  side: 'width'/'height'/'length'
-  value: 値
+  辺の長さでソートしたのを返す
   ###
-  _longestSide: (parcel)->
+  _sortSide: (parcel)->
     sides = [
       side: 'width'
       value: parcel.width
@@ -25,7 +25,26 @@ module.exports = class calcBox
     sides = sides.sort (a, b)->
       b.value - a.value
 
+    sides
+  ###
+  最大長を返す
+  side: 'width'/'height'/'length'
+  value: 値
+  ###
+  _longestSide: (parcel)->
+    sides = @_sortSide parcel
+
     sides[0]
+
+  ###
+  最短辺を返す
+  side: 'width'/'height'/'length'
+  value: 値
+  ###
+  _shortestSide: (parcel)->
+    sides = @_sortSide parcel
+
+    sides[2]
 
   ###
   最大辺が超えてないか
@@ -46,13 +65,13 @@ module.exports = class calcBox
       height: 'height'
       length: 'length'
     LEFT_1 =
-      width: 'length'
-      height: 'width'
-      length: 'height'
-    LEFT_2 =
       width: 'height'
       height: 'length'
       length: 'width'
+    LEFT_2 =
+      width: 'length'
+      height: 'width'
+      length: 'height'
 
     switch box.side
       when 'width'
@@ -129,3 +148,45 @@ module.exports = class calcBox
 
 
     true
+
+  _pushParcel: (parcel, table)->
+
+    longestSideOfBox = @_longestSide @
+
+    debug "longestSideOfBox.side: #{longestSideOfBox.side}"
+    debug "table[longestSideOfBox.side]: #{table[longestSideOfBox.side]}"
+    debug "parcel[table[longestSideOfBox.side]]: #{parcel[table[longestSideOfBox.side]]}"
+    @[longestSideOfBox.side] -= parcel[table[longestSideOfBox.side]]
+
+  pushParcel: (parcel)->
+    unless @canContain parcel
+      return false
+
+    # 箱を最大限に活かすために，
+    # 箱の最短辺と荷物の長辺を比較．
+    # 入ればそれで箱の容量を減らす．
+    # 入らなければ次に短い荷物の辺を比較
+    # 以下繰り返し
+
+    sides = @_sortSide parcel
+    shortestSideOfBox = @_shortestSide @
+    # 箱の最短辺と荷物の長辺を比較して
+    for side in sides
+      debug "parcel[#{side.side}] = #{parcel[side.side]}"
+      if shortestSideOfBox.value > side.value
+        debug "shortestSideOfBox.side = #{shortestSideOfBox.side}"
+        debug "side.side = #{side.side}"
+        table = @_adjustSide shortestSideOfBox, side
+        for k,v of table
+          debug "box[#{k}]@#{@[k]} : parcel[#{v}]@#{parcel[v]}"
+        
+        @_pushParcel(parcel, table)
+        break
+
+
+    true
+    
+
+
+
+
