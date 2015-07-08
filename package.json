@@ -16,8 +16,8 @@
     "url": "https://github.com/pchw/calc-box.git"
   },
   "scripts": {
-    "test": "gulp test",
-    "pretest": "gulp"
+    "test": "./node_modules/.bin/gulp test",
+    "pretest": "./node_modules/.bin/gulp"
   },
   "dependencies": {
     "should": "^4.0.4",
