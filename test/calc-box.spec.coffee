@@ -1,9 +1,11 @@
 require 'coffee-errors'
 
 should = require 'should'
-sinon = require 'sinon'
+combinatorics = require 'js-combinatorics'
+
 # using compiled JavaScript file here to be sure module works
 calcBox = require '../lib/calc-box.js'
+
 
 describe 'check generals', ->
   it 'construct box with no params', ->
@@ -171,3 +173,17 @@ describe '複数個の荷物を使ったテスト', ->
     should.exists canContain
     canContain.should.be.false
 
+describe '箱の向きについて', ->
+  MARK_IV =
+    width: 38.1 # 15 inch
+    height: 30.48 #12 inch
+    depth: 20.32 # 8 inch
+  combinatorics.permutation([21, 30, 20]).toArray().map (size)->
+    width: size[0]
+    height: size[1]
+    depth: size[2]
+  .forEach (parcel)->
+    describe "#{parcel.width}w x #{parcel.height}h x #{parcel.depth}d が", ->
+      it "MARK IV箱に入ること", ->
+        box = new calcBox MARK_IV
+        box.canContain(parcel).should.be.true
