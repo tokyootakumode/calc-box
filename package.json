@@ -23,7 +23,8 @@
     "should": "^4.0.4",
     "debug": "^2.0.0",
     "gulp-istanbul": "^0.10.0",
-    "js-combinatorics": "^0.5.0"
+    "js-combinatorics": "^0.5.0",
+    "lodash": "^3.10.0"
   },
   "devDependencies": {
     "chai": "^1.9.1",
