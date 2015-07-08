@@ -1,4 +1,5 @@
 debug = require('debug')('calcbox')
+_ = require 'lodash'
 
 module.exports = class calcBox
   constructor: (params) ->
@@ -72,6 +73,8 @@ module.exports = class calcBox
       width: 'depth'
       height: 'width'
       depth: 'height'
+    # @FIXME: ねじれた位置での比較が考慮されていない。
+    # 上記3種以外にheight,depthの2辺の順番違いの条件が存在する。
 
     switch box.side
       when 'width'
@@ -100,19 +103,13 @@ module.exports = class calcBox
             ASIS
 
   ###
-  最大辺を合わせた際に，残りの辺が箱からはみ出ていないか
+  荷物が箱の残りスペースの範囲に収まっているか
   ###
   _isOverSide: (parcel)->
-    longestSideOfParcel = @_longestSide parcel
-    longestSideOfBox = @_longestSide @
-
-    table = @_adjustSide longestSideOfBox, longestSideOfParcel
-
-    for k, v of table
-      if @[k] <= parcel[v]
-        return true
-
-    false    
+    table = @_sortSide @
+    sortedParcel = @_sortSide parcel
+    _.zip(table, sortedParcel).some (side)->
+      side[0].value < side[1].value
 
   ###
   箱の体積を荷物が超えているかをチェックする
@@ -145,7 +142,6 @@ module.exports = class calcBox
 
     # 容量が箱を超えていたら入らない
     return false if @_isOverVolume parcel
-
 
     true
 
