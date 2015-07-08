@@ -21,7 +21,8 @@
   },
   "dependencies": {
     "should": "^4.0.4",
-    "debug": "^2.0.0"
+    "debug": "^2.0.0",
+    "gulp-istanbul": "^0.10.0"
   },
   "devDependencies": {
     "chai": "^1.9.1",
