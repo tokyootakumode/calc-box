@@ -202,4 +202,3 @@ describe '箱の向きについて', ->
       it "MARK IV箱に入ること", ->
         box = new calcBox MARK_IV
         box.canContain(parcel).should.be.true
-)
