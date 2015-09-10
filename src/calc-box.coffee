@@ -12,7 +12,7 @@ module.exports = class calcBox
   ###
   辺の長さでソートしたのを返す
   ###
-  _sortSide: (parcel)->
+  _sortSide: (parcel, sort)->
     sides = [
       side: 'width'
       value: parcel.width
@@ -23,8 +23,13 @@ module.exports = class calcBox
       side: 'depth'
       value: parcel.depth
     ]
-    sides = sides.sort (a, b)->
-      b.value - a.value
+
+    if sort is 'asc'
+      sides = sides.sort (a, b)->
+        a.value - b.value
+    else
+      sides = sides.sort (a, b)->
+        b.value - a.value
 
     sides
   ###
@@ -146,32 +151,39 @@ module.exports = class calcBox
 
   _pushParcel: (parcel, table)->
 
-    longestSideOfBox = @_longestSide @
+    shortestSideOfBox = @_shortestSide @
 
-    debug "longestSideOfBox.side: #{longestSideOfBox.side}"
-    debug "table[longestSideOfBox.side]: #{table[longestSideOfBox.side]}"
-    debug "parcel[table[longestSideOfBox.side]]: #{parcel[table[longestSideOfBox.side]]}"
-    @[longestSideOfBox.side] -= parcel[table[longestSideOfBox.side]]
+    debug "shortestSideOfBox.side: #{shortestSideOfBox.side}"
+    debug "table[shortestSideOfBox.side]: #{table[shortestSideOfBox.side]}"
+    debug "parcel[table[shortestSideOfBox.side]]: #{parcel[table[shortestSideOfBox.side]]}"
+    @[shortestSideOfBox.side] -= parcel[table[shortestSideOfBox.side]]
+
+    # longestSideOfBox = @_longestSide @
+    #
+    # debug "longestSideOfBox.side: #{longestSideOfBox.side}"
+    # debug "table[longestSideOfBox.side]: #{table[longestSideOfBox.side]}"
+    # debug "parcel[table[longestSideOfBox.side]]: #{parcel[table[longestSideOfBox.side]]}"
+    # @[longestSideOfBox.side] -= parcel[table[longestSideOfBox.side]]
 
   pushParcel: (parcel)->
     unless @canContain parcel
       return false
 
-    # 箱を最大限に活かすために，
-    # 箱の最短辺と荷物の長辺を比較．
-    # 入ればそれで箱の容量を減らす．
-    # 入らなければ次に短い荷物の辺を比較
-    # 以下繰り返し
+    # 箱に商品を入れる向きを決定し、商品分箱のサイズを小さくする
+    #
+    # ・箱に最大限に商品を入れるため、
+    # 　荷物の最長辺が入る箱の最短長の辺を探し、それらの辺を合わせる向きで商品を箱に入れる。
+    # ・商品の向きが決まったら、商品分箱のサイズを小さくして処理終了。
 
-    sides = @_sortSide parcel
-    shortestSideOfBox = @_shortestSide @
+    BoxSides = @_sortSide @, 'asc'
+    longestSideOfParcel = @_longestSide parcel
     # 箱の最短辺と荷物の長辺を比較して
-    for side in sides
-      debug "parcel[#{side.side}] = #{parcel[side.side]}"
-      if shortestSideOfBox.value > side.value
-        debug "shortestSideOfBox.side = #{shortestSideOfBox.side}"
-        debug "side.side = #{side.side}"
-        table = @_adjustSide shortestSideOfBox, side
+    for BoxSide in BoxSides
+      debug "box[#{BoxSide.side}] = #{parcel[BoxSide.side]}"
+      if longestSideOfParcel.value <= BoxSide.value
+        debug "longestSideOfParcel.side = #{longestSideOfParcel.side}"
+        debug "BoxSide.side = #{BoxSide.side}"
+        table = @_adjustSide longestSideOfParcel, BoxSide
         for k,v of table
           debug "box[#{k}]@#{@[k]} : parcel[#{v}]@#{parcel[v]}"
 
@@ -180,3 +192,28 @@ module.exports = class calcBox
 
 
     true
+
+
+    # 箱を最大限に活かすために，
+    # 箱の最短辺と荷物の長辺を比較．
+    # 入ればそれで箱の容量を減らす．
+    # 入らなければ次に短い荷物の辺を比較
+    # 以下繰り返し
+
+    # sides = @_sortSide parcel
+    # shortestSideOfBox = @_shortestSide @
+    # # 箱の最短辺と荷物の長辺を比較して
+    # for side in sides
+    #   debug "parcel[#{side.side}] = #{parcel[side.side]}"
+    #   if shortestSideOfBox.value > side.value
+    #     debug "shortestSideOfBox.side = #{shortestSideOfBox.side}"
+    #     debug "side.side = #{side.side}"
+    #     table = @_adjustSide shortestSideOfBox, side
+    #     for k,v of table
+    #       debug "box[#{k}]@#{@[k]} : parcel[#{v}]@#{parcel[v]}"
+    #
+    #     @_pushParcel(parcel, table)
+    #     break
+    #
+    #
+    # true
