@@ -50,6 +50,21 @@ describe '1つの荷物を使ったテスト', ->
     should.exists canContain
     canContain.should.be.true
 
+  it '箱の内側にぴったり入りきるサイズ', ->
+    box = new calcBox
+      width: 100
+      height: 200
+      depth: 300
+
+    parcel =
+      width: 100
+      height: 200
+      depth: 300
+
+    canContain = box.canContain parcel
+    should.exists canContain
+    canContain.should.be.true
+
   it '荷物の最大辺が箱の最大辺を超えてしまった', ->
     box = new calcBox
       width: 300
@@ -57,7 +72,7 @@ describe '1つの荷物を使ったテスト', ->
       depth: 200
 
     parcel =
-      width: 300
+      width: 301
       height: 20
       depth: 30
 
@@ -71,7 +86,7 @@ describe '1つの荷物を使ったテスト', ->
       height: 100
       depth: 200
 
-    parcel = 
+    parcel =
       width: 250
       height: 10
       depth: 20
@@ -86,7 +101,7 @@ describe '1つの荷物を使ったテスト', ->
       height: 50
       depth: 80
 
-    parcel = 
+    parcel =
       width: 90
       height: 90
       depth: 90
@@ -101,7 +116,7 @@ describe '1つの荷物を使ったテスト', ->
       height: 50
       depth: 80
 
-    parcel = 
+    parcel =
       width: 90
       height: 90
       depth: 90
@@ -187,3 +202,4 @@ describe '箱の向きについて', ->
       it "MARK IV箱に入ること", ->
         box = new calcBox MARK_IV
         box.canContain(parcel).should.be.true
+)

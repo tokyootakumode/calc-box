@@ -55,7 +55,7 @@ module.exports = class calcBox
     longestSideOfBox = @_longestSide @
 
     # BOXの最大辺が荷物の最大辺に達するとオーバー
-    return longestSideOfBox.value <= longestSideOfParcel.value
+    return longestSideOfBox.value < longestSideOfParcel.value
 
   ###
   最大辺同士を合わせた際に，対応する辺を導き出す
@@ -117,8 +117,7 @@ module.exports = class calcBox
   _isOverVolume: (parcel)->
     volumeOfParcel = parcel.width * parcel.height * parcel.depth
     volumeOfBox = @width * @height * @depth
-
-    return volumeOfBox <= volumeOfParcel
+    return volumeOfBox < volumeOfParcel
 
   ###
   指定された荷物が箱に入るかどうかを確認する
@@ -175,14 +174,9 @@ module.exports = class calcBox
         table = @_adjustSide shortestSideOfBox, side
         for k,v of table
           debug "box[#{k}]@#{@[k]} : parcel[#{v}]@#{parcel[v]}"
-        
+
         @_pushParcel(parcel, table)
         break
 
 
     true
-    
-
-
-
-
