@@ -63,61 +63,6 @@ module.exports = class calcBox
     return longestSideOfBox.value < longestSideOfParcel.value
 
   ###
-  最大辺同士を合わせた際に，対応する辺を導き出す
-  ###
-  _getTableOfSides: (box, parcel)->
-    ASIS =
-      width: 'width'
-      height: 'height'
-      depth: 'depth'
-    LEFT_1 =
-      width: 'height'
-      height: 'depth'
-      depth: 'width'
-    LEFT_2 =
-      width: 'depth'
-      height: 'width'
-      depth: 'height'
-    # EXCHANGE_SIDE_1 =
-    #   width: 'width'
-    #   height: 'depth'
-    #   depth: 'height'
-    # EXCHANGE_SIDE_2 =
-    #   width: 'depth'
-    #   height: 'height'
-    #   depth: 'width'
-    # EXCHANGE_SIDE_3  =
-    #   width: 'height'
-    #   height: 'width'
-    #   depth: 'depth'
-
-    switch box.side
-      when 'width'
-        switch parcel.side
-          when 'width'
-            ASIS
-          when 'height'
-            LEFT_1
-          when 'depth'
-            LEFT_2
-      when 'height'
-        switch parcel.side
-          when 'width'
-            LEFT_2
-          when 'height'
-            ASIS
-          when 'depth'
-            LEFT_1
-      when 'depth'
-        switch parcel.side
-          when 'width'
-            LEFT_1
-          when 'height'
-            LEFT_2
-          when 'depth'
-            ASIS
-
-  ###
   荷物が箱の残りスペースの範囲に収まっているか
   ###
   _isOverSide: (parcel)->
@@ -159,45 +104,34 @@ module.exports = class calcBox
 
     true
 
-  _pushParcel: (parcel, table)->
+  # 荷物を箱につめる。
+  # ・荷物を入れたあとの箱の容量をできるだけ大きくするため、
+  #   荷物の一番小さな辺を、箱のできるだけ大きい辺と合わせて箱に詰める。
+  _pushParcel: (parcel, suitableSideOfBox)->
+    boxSides = @_sortSide @
+    shortestSideOfPrcel = @_shortestSide parcel
 
-    shortestSideOfBox = @_shortestSide @
+    for boxSide in boxSides
+      if suitableSideOfBox.side isnt boxSide.side
+        @[boxSide.side] -= shortestSideOfPrcel.value
+        return true
 
-    debug "shortestSideOfBox.side: #{shortestSideOfBox.side}"
-    debug "table[shortestSideOfBox.side]: #{table[shortestSideOfBox.side]}"
-    debug "parcel[table[shortestSideOfBox.side]]: #{parcel[table[shortestSideOfBox.side]]}"
-    @[shortestSideOfBox.side] -= parcel[table[shortestSideOfBox.side]]
-
-    # longestSideOfBox = @_longestSide @
-    #
-    # debug "longestSideOfBox.side: #{longestSideOfBox.side}"
-    # debug "table[longestSideOfBox.side]: #{table[longestSideOfBox.side]}"
-    # debug "parcel[table[longestSideOfBox.side]]: #{parcel[table[longestSideOfBox.side]]}"
-    # @[longestSideOfBox.side] -= parcel[table[longestSideOfBox.side]]
+    return false
 
   pushParcel: (parcel)->
     unless @canContain parcel
       return false
 
-    # 箱に商品を入れる向きを決定し、商品分箱のサイズを小さくする
-    #
-    # ・箱に最大限に商品を入れるため、
-    # 　荷物の最長辺が入る箱の最短長の辺を探し、それらの辺を合わせる向きで商品を箱に入れる。
-    # ・商品の向きが決まったら、商品分箱のサイズを小さくして処理終了。
-
-    BoxSides = @_sortSide @, 'asc'
+    # 箱に荷物を入れる向きを調整し、荷物分箱のサイズを小さくする
+    # ・箱に最大限に荷物を入れるため、
+    # 　荷物の最長辺を、箱のできるだけ小さい辺に合わせて箱に入れる。
+    # ・荷物の向きが決まったら、荷物分箱のサイズを小さくして処理終了。
+    boxSides = @_sortSide @, 'asc'
     longestSideOfParcel = @_longestSide parcel
-    # 箱の最短辺と荷物の長辺を比較して
-    for BoxSide in BoxSides
-      debug "box[#{BoxSide.side}] = #{parcel[BoxSide.side]}"
-      if longestSideOfParcel.value <= BoxSide.value
+
+    # 荷物の最長辺を、箱の最短辺と順番に比較していく
+    for boxSide in boxSides
+      if longestSideOfParcel.value <= boxSide.value
         debug "longestSideOfParcel.side = #{longestSideOfParcel.side}"
-        debug "BoxSide.side = #{BoxSide.side}"
-        table = @_getTableOfSides longestSideOfParcel, BoxSide
-        for k,v of table
-          debug "box[#{k}]@#{@[k]} : parcel[#{v}]@#{parcel[v]}"
-
-        @_pushParcel(parcel, table)
-        break
-
-    true
+        debug "boxSide.side = #{boxSide.side}"
+        return @_pushParcel(parcel, boxSide)

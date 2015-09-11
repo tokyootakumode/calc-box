@@ -140,12 +140,55 @@ describe '1つの荷物を使ったテスト', ->
     should.exists r
     r.should.be.true
 
-    box.width.should.eql 90
-    box.height.should.eql 200
+    box.width.should.eql 100
+    box.height.should.eql 190
     box.depth.should.eql 300
 
 describe '複数個の荷物を使ったテスト', ->
-  it '荷物を入れたあとに箱の残り容量が減る', ->
+  it '荷物を入れたあとに箱の残り容量が減る(荷物が直方体)', ->
+    box = new calcBox
+      width: 100
+      height: 200
+      depth: 300
+
+    parcelA =
+      width: 98
+      height: 99
+      depth: 100
+
+    r = box.pushParcel parcelA
+    should.exists r
+    r.should.be.true
+
+    r = box.pushParcel parcelA
+    should.exists r
+    r.should.be.true
+
+    box.width.should.eql 100
+    box.height.should.eql 200
+    box.depth.should.eql 104
+
+    r = box.pushParcel parcelA
+    should.exists r
+    r.should.be.true
+
+    box.width.should.eql 100
+    box.height.should.eql 102
+    box.depth.should.eql 104
+
+    r = box.pushParcel parcelA
+    should.exists r
+    r.should.be.true
+
+    box.width.should.eql 100
+    box.height.should.eql 102
+    box.depth.should.eql 6
+
+    canContain = box.canContain parcelA
+    should.exists canContain
+    canContain.should.be.false
+
+  it '荷物を入れたあとに箱の残り容量が減る(荷物が立方体)', ->
     box = new calcBox
       width: 100
       height: 200
