@@ -140,9 +140,9 @@ describe '1つの荷物を使ったテスト', ->
     should.exists r
     r.should.be.true
 
-    box.width.should.eql 100
+    box.width.should.eql 90
     box.height.should.eql 200
-    box.depth.should.eql 290
+    box.depth.should.eql 300
 
 describe '複数個の荷物を使ったテスト', ->
   it '荷物を入れたあとに箱の残り容量が減る', ->
