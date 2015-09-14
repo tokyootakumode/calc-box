@@ -288,6 +288,7 @@ describe '過去に問題があったケースが再現しない事のテスト'
       else
         r.should.be.false
 
+      # for debug
       # console.log("---商品が#{i}個-------------------")
       # console.log(box.width)
       # console.log(box.height)
