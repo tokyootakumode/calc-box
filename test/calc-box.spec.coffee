@@ -264,3 +264,33 @@ describe '箱の向きについて', ->
       it "MARK IV箱に入ること", ->
         box = new calcBox MARK_IV
         box.canContain(parcel).should.be.true
+
+describe '過去に問題があったケースが再現しない事のテスト', ->
+  it '期待通りの箱に期待通りの個数荷物が入る', ->
+    # Maihama の BOX4 のサイズ
+    box = new calcBox
+      width: 51
+      height: 29
+      depth: 30
+
+    parcelA =
+      width: 21
+      height: 30
+      depth: 3
+
+    i = 1
+    while i <= 20
+      # 箱に1つ商品を入れる
+      r = box.pushParcel parcelA
+      should.exists r
+      if i <= 19
+        r.should.be.true
+      else
+        r.should.be.false
+
+      # console.log("---商品が#{i}個-------------------")
+      # console.log(box.width)
+      # console.log(box.height)
+      # console.log(box.depth)
+      # console.log(box.canContain parcelA)
+      i++

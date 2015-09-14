@@ -105,18 +105,31 @@ module.exports = class calcBox
     true
 
   # 荷物を箱につめる。
-  # ・荷物を入れたあとの箱の容量をできるだけ大きくするため、
-  #   荷物の一番小さな辺を、箱のできるだけ大きい辺と合わせて箱に詰める。
+  # 荷物の最長辺と、その辺に対応する箱の辺以外の辺をどの様に合わせるか調整してあわせ、
+  # 荷物分 箱の容量を減らす
   _pushParcel: (parcel, suitableSideOfBox)->
+
+    parcelSides = @_sortSide parcel
+    longestSideOfPrcel  = parcelSides[1]
+    shortestSideOfPrcel = parcelSides[2]
+
+    # 箱の、荷物の最長辺に合わせる辺以外の一覧を取得する
     boxSides = @_sortSide @
-    shortestSideOfPrcel = @_shortestSide parcel
+    boxSides = boxSides.filter (boxSide)->
+      suitableSideOfBox.side isnt boxSide.side
+    longestSideOfBox  = boxSides[0]
+    shortestSideOfBox = boxSides[1]
 
-    for boxSide in boxSides
-      if suitableSideOfBox.side isnt boxSide.side
-        @[boxSide.side] -= shortestSideOfPrcel.value
-        return true
+    if longestSideOfPrcel.value > shortestSideOfBox.value
+      # 荷物の残りの辺の長い方が、箱の残りの辺の短い方より長い場合、
+      # 長い辺同士、短い辺同士をあわせるしかない。
+      @[shortestSideOfBox.side] -= shortestSideOfPrcel.value
+    else
+      # 荷物を入れたあとの箱の容量をできるだけ大きくするため、
+      # 荷物の残りの辺の短い方を、箱の残りの辺の長い方とあわせる。
+      @[longestSideOfBox.side] -= shortestSideOfPrcel.value
 
-    return false
+    return true
 
   pushParcel: (parcel)->
     unless @canContain parcel
