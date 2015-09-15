@@ -287,11 +287,4 @@ describe '過去に問題があったケースが再現しない事のテスト'
         r.should.be.true
       else
         r.should.be.false
-
-      # for debug
-      # console.log("---商品が#{i}個-------------------")
-      # console.log(box.width)
-      # console.log(box.height)
-      # console.log(box.depth)
-      # console.log(box.canContain parcelA)
       i++
