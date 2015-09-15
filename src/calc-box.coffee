@@ -110,24 +110,25 @@ module.exports = class calcBox
   _pushParcel: (parcel, suitableSideOfBox)->
 
     parcelSides = @_sortSide parcel
-    longestSideOfPrcel  = parcelSides[1]
-    shortestSideOfPrcel = parcelSides[2]
+    # 荷物の、まだ箱のどの辺に合わせるか決定していない2辺を取得
+    longerSideOfPrcel  = parcelSides[1]
+    shorterSideOfPrcel = parcelSides[2]
 
-    # 箱の、荷物の最長辺に合わせる辺以外の一覧を取得する
+    # 箱の、まだ荷物のどの辺に合わせるか決定していない2辺を取得
     boxSides = @_sortSide @
     boxSides = boxSides.filter (boxSide)->
       suitableSideOfBox.side isnt boxSide.side
-    longestSideOfBox  = boxSides[0]
-    shortestSideOfBox = boxSides[1]
+    longerSideOfBox  = boxSides[0]
+    shorterSideOfBox = boxSides[1]
 
-    if longestSideOfPrcel.value > shortestSideOfBox.value
+    if longerSideOfPrcel.value > shorterSideOfBox.value
       # 荷物の残りの辺の長い方が、箱の残りの辺の短い方より長い場合、
       # 長い辺同士、短い辺同士をあわせるしかない。
-      @[shortestSideOfBox.side] -= shortestSideOfPrcel.value
+      @[shorterSideOfBox.side] -= shorterSideOfPrcel.value
     else
       # 荷物を入れたあとの箱の容量をできるだけ大きくするため、
       # 荷物の残りの辺の短い方を、箱の残りの辺の長い方とあわせる。
-      @[longestSideOfBox.side] -= shortestSideOfPrcel.value
+      @[longerSideOfBox.side] -= shorterSideOfPrcel.value
 
     return true
 
