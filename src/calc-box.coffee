@@ -8,6 +8,8 @@ module.exports = class calcBox
       @height
       @depth
     } = params if params
+    @parcels = []
+    @x = @y = @z = 0
 
   ###
   辺の長さでソートしたのを返す
@@ -104,6 +106,15 @@ module.exports = class calcBox
 
     true
 
+  _updatePositions: (parcel, side)->
+    switch side
+      when 'width'
+        @x += parcel.width
+      when 'height'
+        @z += parcel.height
+      when 'depth'
+        @y += parcel.depth
+
   # 荷物を箱につめる。
   # 荷物の最長辺と、その辺に対応する箱の辺以外の辺をどの様に合わせるか調整してあわせ、
   # 荷物分 箱の容量を減らす
@@ -121,14 +132,28 @@ module.exports = class calcBox
     longerSideOfBox  = boxSides[0]
     shorterSideOfBox = boxSides[1]
 
+    p =
+      x: @x
+      y: @y
+      z: @z
+
     if longerSideOfPrcel.value > shorterSideOfBox.value
       # 荷物の残りの辺の長い方が、箱の残りの辺の短い方より長い場合、
       # 長い辺同士、短い辺同士をあわせるしかない。
       @[shorterSideOfBox.side] -= shorterSideOfPrcel.value
+      p[suitableSideOfBox.side] = parcelSides[0].value
+      p[shorterSideOfBox.side] = shorterSideOfPrcel.value
+      p[longerSideOfBox.side] = longerSideOfPrcel.value
+      @_updatePositions p, shorterSideOfBox.side
     else
       # 荷物を入れたあとの箱の容量をできるだけ大きくするため、
       # 荷物の残りの辺の短い方を、箱の残りの辺の長い方とあわせる。
       @[longerSideOfBox.side] -= shorterSideOfPrcel.value
+      p[suitableSideOfBox.side] = parcelSides[0].value
+      p[longerSideOfBox.side] = shorterSideOfPrcel.value
+      p[shorterSideOfBox.side] = longerSideOfPrcel.value
+      @_updatePositions p, longerSideOfBox.side
+    @parcels.push p
 
     return true
 
