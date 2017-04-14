@@ -2,6 +2,7 @@ require 'coffee-errors'
 
 should = require 'should'
 combinatorics = require 'js-combinatorics'
+_ = require "lodash"
 
 # using compiled JavaScript file here to be sure module works
 calcBox = require '../lib/calc-box.js'
@@ -163,6 +164,29 @@ describe '1つの荷物を使ったテスト', ->
     box.height.should.eql 200
     box.depth.should.eql 300
 
+  [
+    {
+      width: 10
+      height: 110
+      depth: 230
+    }
+    {
+      width: 100
+      height: 200
+      depth: 300
+    }
+  ].forEach (parcel)->
+    it "parcels のポジションは常に 0 (w: #{parcel.width}, h: #{parcel.height}, d: #{parcel.depth})", ->
+      box = new calcBox
+        width: 100
+        height: 200
+        depth: 300
+      r = box.pushParcel parcel
+      should.exists r
+      r.should.be.true
+
+      box.parcels.should.eql [_.merge parcel, x: 0, y: 0, z: 0]
+
 describe '複数個の荷物を使ったテスト', ->
   it '荷物を入れたあとに箱の残り容量が減る(荷物が直方体)', ->
     box = new calcBox
@@ -249,6 +273,50 @@ describe '複数個の荷物を使ったテスト', ->
     canContain = box.canContain parcelA
     should.exists canContain
     canContain.should.be.false
+
+  it "parcels のポジションが正しい", ->
+    box = new calcBox
+      width: 100
+      height: 200
+      depth: 300
+    parcelA =
+      width: 100
+      height: 100
+      depth: 100
+
+    r = box.pushParcel parcelA
+    should.exists r
+    r.should.be.true
+    box.parcels.should.eql [
+      _.merge {}, parcelA, x: 0, y: 0, z: 0
+    ]
+
+    r = box.pushParcel parcelA
+    should.exists r
+    r.should.be.true
+    box.parcels.should.eql [
+      _.merge {}, parcelA, x: 0, y: 0, z: 0
+      _.merge {}, parcelA, x: 0, y: 100, z: 0
+    ]
+
+    r = box.pushParcel parcelA
+    should.exists r
+    r.should.be.true
+    box.parcels.should.eql [
+      _.merge {}, parcelA, x: 0, y: 0, z: 0
+      _.merge {}, parcelA, x: 0, y: 100, z: 0
+      _.merge {}, parcelA, x: 0, y: 100, z: 100
+    ]
+
+    r = box.pushParcel parcelA
+    should.exists r
+    r.should.be.true
+    box.parcels.should.eql [
+      _.merge {}, parcelA, x: 0, y: 0, z: 0
+      _.merge {}, parcelA, x: 0, y: 100, z: 0
+      _.merge {}, parcelA, x: 0, y: 100, z: 100
+      _.merge {}, parcelA, x: 0, y: 200, z: 100
+    ]
 
 describe '箱の向きについて', ->
   MARK_IV =
