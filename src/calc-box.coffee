@@ -1,7 +1,7 @@
 debug = require('debug')('calcbox')
 _ = require 'lodash'
 
-module.exports = class calcBox
+module.exports = class CalcBox
   constructor: (params) ->
     {
       @width

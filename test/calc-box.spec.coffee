@@ -5,19 +5,19 @@ combinatorics = require 'js-combinatorics'
 _ = require "lodash"
 
 # using compiled JavaScript file here to be sure module works
-calcBox = require '../lib/calc-box.js'
+CalcBox = require '../lib/calc-box.js'
 
 
 describe 'check generals', ->
   it 'construct box with no params', ->
-    box = new calcBox
+    box = new CalcBox
     should.exists box
   it 'construct box with not enough params', ->
-    box = new calcBox
+    box = new CalcBox
       width: 10
     should.exists box
   it 'canContainは必ずparcelを受け取る', ->
-    box = new calcBox
+    box = new CalcBox
       width: 100
       height: 200
       depth: 300
@@ -29,7 +29,7 @@ describe 'check generals', ->
 describe '1つの荷物を使ったテスト', ->
   it '荷物は横幅・縦幅・奥行きを持っている', ->
     # TODO
-    box = new calcBox
+    box = new CalcBox
       width: 100
       height: 200
       depth: 300
@@ -37,7 +37,7 @@ describe '1つの荷物を使ったテスト', ->
     canContain = box.canContain {}
     should.not.exists canContain
   it '箱に入りきるサイズ', ->
-    box = new calcBox
+    box = new CalcBox
       width: 100
       height: 200
       depth: 300
@@ -52,7 +52,7 @@ describe '1つの荷物を使ったテスト', ->
     canContain.should.be.true
 
   it '箱の内側にぴったり入りきるサイズ', ->
-    box = new calcBox
+    box = new CalcBox
       width: 100
       height: 200
       depth: 300
@@ -67,7 +67,7 @@ describe '1つの荷物を使ったテスト', ->
     canContain.should.be.true
 
   it '荷物の最大辺が箱の最大辺を超えてしまった', ->
-    box = new calcBox
+    box = new CalcBox
       width: 300
       height: 100
       depth: 200
@@ -82,7 +82,7 @@ describe '1つの荷物を使ったテスト', ->
     canContain.should.be.false
 
   it '荷物の最大辺が箱の1辺を超えている', ->
-    box = new calcBox
+    box = new CalcBox
       width: 300
       height: 100
       depth: 200
@@ -97,7 +97,7 @@ describe '1つの荷物を使ったテスト', ->
     canContain.should.be.true
 
   it '荷物の容量が箱の容量を超えている', ->
-    box = new calcBox
+    box = new CalcBox
       width: 100
       height: 50
       depth: 80
@@ -112,7 +112,7 @@ describe '1つの荷物を使ったテスト', ->
     canContain.should.be.false
 
   it '荷物の容量が超えていないが，二番目に長い辺が超えている', ->
-    box = new calcBox
+    box = new CalcBox
       width: 300
       height: 50
       depth: 80
@@ -127,7 +127,7 @@ describe '1つの荷物を使ったテスト', ->
     canContain.should.be.false
 
   it '荷物を入れたあとに残りの容量が減る', ->
-    box = new calcBox
+    box = new CalcBox
       width: 100
       height: 200
       depth: 300
@@ -146,7 +146,7 @@ describe '1つの荷物を使ったテスト', ->
     box.depth.should.eql 300
 
   it '荷物を入れたあとに残りの容量が減る2', ->
-    box = new calcBox
+    box = new CalcBox
       width: 100
       height: 200
       depth: 300
@@ -177,7 +177,7 @@ describe '1つの荷物を使ったテスト', ->
     }
   ].forEach (parcel)->
     it "parcels のポジションは常に 0 (w: #{parcel.width}, h: #{parcel.height}, d: #{parcel.depth})", ->
-      box = new calcBox
+      box = new CalcBox
         width: 100
         height: 200
         depth: 300
@@ -189,7 +189,7 @@ describe '1つの荷物を使ったテスト', ->
 
 describe '複数個の荷物を使ったテスト', ->
   it '荷物を入れたあとに箱の残り容量が減る(荷物が直方体)', ->
-    box = new calcBox
+    box = new CalcBox
       width: 100
       height: 200
       depth: 300
@@ -232,7 +232,7 @@ describe '複数個の荷物を使ったテスト', ->
     canContain.should.be.false
 
   it '荷物を入れたあとに箱の残り容量が減る(荷物が立方体)', ->
-    box = new calcBox
+    box = new CalcBox
       width: 100
       height: 200
       depth: 300
@@ -275,7 +275,7 @@ describe '複数個の荷物を使ったテスト', ->
     canContain.should.be.false
 
   it "parcels のポジションが正しい", ->
-    box = new calcBox
+    box = new CalcBox
       width: 100
       height: 200
       depth: 300
@@ -330,13 +330,13 @@ describe '箱の向きについて', ->
   .forEach (parcel)->
     describe "#{parcel.width}w x #{parcel.height}h x #{parcel.depth}d が", ->
       it "MARK IV箱に入ること", ->
-        box = new calcBox MARK_IV
+        box = new CalcBox MARK_IV
         box.canContain(parcel).should.be.true
 
 describe '過去に問題があったケースが再現しない事のテスト', ->
   it '期待通りの箱に期待通りの個数荷物が入る', ->
     # Maihama の BOX4 のサイズ
-    box = new calcBox
+    box = new CalcBox
       width: 51
       height: 29
       depth: 30
