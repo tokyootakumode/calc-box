@@ -1,7 +1,7 @@
 debug = require('debug')('calcbox')
 _ = require 'lodash'
 
-module.exports = class calcBox
+module.exports = class CalcBox
   constructor: (params) ->
     {
       @width
@@ -174,3 +174,26 @@ module.exports = class calcBox
         debug "longestSideOfParcel.side = #{longestSideOfParcel.side}"
         debug "boxSide.side = #{boxSide.side}"
         return @_pushParcel(parcel, boxSide)
+
+  add: (parcel)->
+    @parcels.push parcel
+
+  pack: ->
+    origBox = _.pick @, ['width', 'height', 'depth', 'x', 'y', 'z', 'parcels']
+    [parcels, @parcels] = [_.cloneDeep(origBox.parcels), []]
+    parcels.sort (a, b)->
+      return r if r = Math.max(b.width, b.height, b.depth) - Math.max(a.width, a.height, a.depth)
+      b.width * b.height * b.depth - a.width * a.height * a.depth
+    return true if do ()=>
+      for p in parcels
+        return false unless @pushParcel p
+      return true
+
+    _.merge @, origBox
+    [parcels, @parcels] = [_.cloneDeep(origBox.parcels), []]
+    parcels.sort (a, b)->
+      return r if r = Math.min(a.width, a.height, a.depth) - Math.min(b.width, b.height, b.depth)
+      a.width * a.height * a.depth - b.width * b.height * b.depth
+    for p in parcels
+      return false unless @pushParcel p
+    return true
