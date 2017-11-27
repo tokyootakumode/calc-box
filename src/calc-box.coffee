@@ -183,7 +183,8 @@ module.exports = class CalcBox
     [parcels, @parcels] = [_.cloneDeep(origBox.parcels), []]
     parcels.sort (a, b)->
       return r if r = Math.max(b.width, b.height, b.depth) - Math.max(a.width, a.height, a.depth)
-      b.width * b.height * b.depth - a.width * a.height * a.depth
+      return v if v = b.width * b.height * b.depth - a.width * a.height * a.depth
+      Math.min(b.width, b.height, b.depth) - Math.min(a.width, a.height, a.depth)
     return true if do ()=>
       for p in parcels
         return false unless @pushParcel p
@@ -193,7 +194,8 @@ module.exports = class CalcBox
     [parcels, @parcels] = [_.cloneDeep(origBox.parcels), []]
     parcels.sort (a, b)->
       return r if r = Math.min(a.width, a.height, a.depth) - Math.min(b.width, b.height, b.depth)
-      a.width * a.height * a.depth - b.width * b.height * b.depth
+      return v if v = a.width * a.height * a.depth - b.width * b.height * b.depth
+      Math.min(a.width, a.height, a.depth) - Math.min(b.width, b.height, b.depth)
     for p in parcels
       return false unless @pushParcel p
     return true
