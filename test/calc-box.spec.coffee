@@ -27,8 +27,7 @@ describe 'check generals', ->
     should.not.exists canContain
 
 describe '1つの荷物を使ったテスト', ->
-  it '荷物は横幅・縦幅・奥行きを持っている', ->
-    # TODO
+  it '荷物は横幅・縦幅・奥行きを持っていない', ->
     box = new CalcBox
       width: 100
       height: 200
@@ -359,8 +358,7 @@ describe '過去に問題があったケースが再現しない事のテスト'
 
 describe 'pack', ->
   describe '1つの荷物を使ったテスト', ->
-    it '荷物は横幅・縦幅・奥行きを持っている', ->
-      # TODO
+    it '荷物は横幅・縦幅・奥行きを持っていない', ->
       box = new CalcBox
         width: 100
         height: 200
